@@ -1,0 +1,114 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Lato, sans-serif;
+    color: rgba(0, 0, 0, 0.9);
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    /* Remove scrollbar space */
+    background: transparent;
+    /* Optional: just make scrollbar invisible */
+}
+
+.summary {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    padding-bottom: 1em;
+    margin-bottom: 30px;
+    /* background-color: red; */
+    box-shadow: 2px 2px 10px black;
+    position: relative;
+    background-color: whitesmoke;
+}
+
+.summary h1 {
+    padding: 1em;
+    font-size: 2rem;
+}
+
+.summary button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 40px 40px;
+    padding: 1em;
+    background-color: rgb(7, 151, 7);
+    border-radius: 10px;
+    color: white;
+    box-shadow: none;
+    border: none;
+    outline: none;
+    transition: background-color 0.5s ease;
+    cursor: pointer;
+}
+
+.summary button:hover {
+    background-color: green;
+
+}
+
+.cases {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* background-color: green; */
+    width: 70%;
+    padding: 1em;
+    font-size: 1.5rem;
+}
+
+.cases>div {
+    text-align: center;
+    margin: 0.5em;
+    /* background-color: red; */
+}
+
+.cases > div div {
+    padding: 0.3em;
+}
+
+.cases div div+div {
+    font-size: 3rem;
+    font-weight: 300;
+    
+}
+
+tr,
+td {
+    border: 1px solid black;
+    padding: 0.5em 0.2em;
+}
+
+td {
+    width: 200px;
+}
+
+table {
+    margin: 0 auto;
+    text-align: center;
+    /* width: 60%; */
+    border-collapse: collapse;
+    border: 2px solid rgba(0, 0, 0, 0.432);
+}
+
+.input {
+    width: 100%;
+    /* background-color: red; */
+    text-align: center;
+    margin: 40px 0;
+}
+
+input {
+    width: 40%;
+    height: 2em;
+    padding: 20px;
+    font-size: 2rem;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid gray;
+}
