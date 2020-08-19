@@ -12,6 +12,7 @@
 </head>
 
 <body>
+    <!-- Summary Banner -->
 
     <div class="summary">
         <h1>Covid-19 Tracker</h1>
@@ -29,18 +30,31 @@
                 <div id="total-recovered">0</div>
             </div>
         </div>
+
+
+        <div class="searchAndTable">
+
+            <!-- Search By Country Input -->
+
+            <div class="input">
+                <input type="text" id="search-input" placeholder="search by country" autocomplete="off">
+            </div>
+
+            <!-- Table data -->
+
+            <table id="all-data"></table>
+
+        </div>
     </div>
 
-    <div class="input">
-        <input type="text" id="search-input" placeholder="search by country">
-    </div>
-
-    <table id="all-data">
-
-    </table>
 
 
+    <br>
+    <br>
+    <br>
 
+
+    <!-- Script Import -->
     <script src="app.js"></script>
 
 </body>
