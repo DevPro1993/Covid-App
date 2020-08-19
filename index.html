@@ -38,12 +38,19 @@
 
             <div class="input">
                 <input type="text" id="search-input" placeholder="search by country" autocomplete="off">
+                <div>
+                    Click on a country to view the plot
+                </div>
             </div>
 
             <!-- Table data -->
 
             <table id="all-data"></table>
 
+        </div>
+
+        <div class="plot" id="graph" style="text-align: center;">
+            
         </div>
     </div>
 
@@ -53,6 +60,7 @@
     <br>
     <br>
 
+    <script src="./node_modules/plotly.js-dist/plotly.js"></script>
 
     <!-- Script Import -->
     <script src="app.js"></script>

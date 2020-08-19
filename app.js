@@ -46,7 +46,7 @@ window.addEventListener('load', async function () {
 
     // Log Data to the console
 
-    console.log(jsonData);
+    // console.log(jsonData);
 
     // Make title row for the table
 
@@ -63,7 +63,8 @@ window.addEventListener('load', async function () {
 
     jsonData.Countries.forEach(country => {
         let newEl = document.createElement('tr');
-        newEl.setAttribute('data-slug', country.Slug)
+        newEl.setAttribute('data-slug', country.Slug);
+        newEl.setAttribute('data-country', country.Country)
         newEl.innerHTML = `
         <td class="country">${country.Country}</td>
         <td>${numberWithCommas(country.TotalConfirmed)}</td>
@@ -82,11 +83,59 @@ window.addEventListener('load', async function () {
     const countryRows = table.querySelectorAll('tr');
 
     for (let i = 1; i < Array(...countryRows).length; i++) {
+        const dateArray = [];
+        const casesArray = [];
         Array(...countryRows)[i].addEventListener('click', async function () {
             let slug = Array(...countryRows)[i].getAttribute('data-slug');
+            let countryName = Array(...countryRows)[i].getAttribute('data-country');
             const response = await fetch(`https://api.covid19api.com/dayone/country/${slug}`);
             const jsonData = await response.json();
-            console.log(jsonData);
+
+            jsonData.forEach(value => {
+                dateArray.push(value['Date']);
+                casesArray.push(value['Confirmed']);
+            })
+
+            const data = [{
+                x: dateArray,
+                y: casesArray,
+                type: 'scatter'
+            }];
+
+            const layout = {
+                title: {
+                    text: `${countryName}`,
+                    font: {
+                        family: 'sans-serif',
+                        size: 18
+                    },
+                    xref: 'paper',
+                    x: 0.05,
+                },
+                xaxis: {
+                    title: {
+                        text: 'Date',
+                        font: {
+                            family: 'sans-serif',
+                            size: 18,
+                            color: '#7f7f7f'
+                        }
+                    },
+                },
+                yaxis: {
+                    title: {
+                        text: 'Covid Cases',
+                        font: {
+                            family: 'sans-serif',
+                            size: 18,
+                            color: '#7f7f7f'
+                        }
+                    }
+                }
+            };
+
+            Plotly.newPlot('graph', data, layout);
+
         })
     }
 
