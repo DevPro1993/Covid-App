@@ -1,6 +1,6 @@
 # Covid Global Stats 
 
-![](memory-game.gif)
+![](.gif)
 
 
 ## Description

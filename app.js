@@ -6,6 +6,7 @@ const totalCases = document.getElementById('total-global');
 const totalDeaths = document.getElementById('total-deaths');
 const totalRecovered = document.getElementById('total-recovered');
 const searchInput = document.getElementById('search-input');
+const covidPlot = document.getElementById('inner-graph').getContext('2d');
 
 const url = 'https://api.covid19api.com/summary';
 
@@ -43,12 +44,6 @@ window.addEventListener('load', async function () {
 
     const response = await fetch(url);
     const jsonData = await response.json();
-
-    // Log Data to the console
-
-    // console.log(jsonData);
-
-    // Make title row for the table
 
     let firstRow = document.createElement('tr');
     firstRow.innerHTML = `
@@ -91,65 +86,61 @@ window.addEventListener('load', async function () {
             const response = await fetch(`https://api.covid19api.com/dayone/country/${slug}`);
             const jsonData = await response.json();
 
+            // Gather date and covid cases data into an array 
+
             jsonData.forEach(value => {
                 dateArray.push(value['Date']);
                 casesArray.push(value['Confirmed']);
             })
 
-            const data = [{
-                x: dateArray,
-                y: casesArray,
-                type: 'scatter'
-            }];
+            // Configure the x and y axis data
 
-            const layout = {
-                title: {
-                    text: `${countryName}`,
-                    font: {
-                        family: 'sans-serif',
-                        size: 18
-                    },
-                    xref: 'paper',
-                    x: 0.05,
-                },
-                xaxis: {
-                    title: {
-                        text: 'Date',
-                        font: {
-                            family: 'sans-serif',
-                            size: 18,
-                            color: '#7f7f7f'
+            const data = {
+                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [12, 19, 3, 5, 2, 3],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            }
+
+            // Configure options
+
+            const options = {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
                         }
-                    },
-                },
-                yaxis: {
-                    title: {
-                        text: 'Covid Cases',
-                        font: {
-                            family: 'sans-serif',
-                            size: 18,
-                            color: '#7f7f7f'
-                        }
-                    }
+                    }]
                 }
-            };
+            }
 
-            Plotly.newPlot('graph', data, layout);
+            // Plot data using Chart.js
+
+            const graph = new Chart(covidPlot, {
+                type: 'line',
+                data: data,
+                options: options
+            });
 
         })
     }
 
 });
-
-
-// window.addEventListener('load', async function () {
-
-//     // Get Data Asynchronously
-
-//     const response = await fetch('https://api.covid19api.com/dayone/country/south-africa');
-//     const jsonData = await response.json();
-
-//     // Log Data to the console
-
-//     console.log(jsonData);
-// });
