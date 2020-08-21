@@ -45,6 +45,8 @@ window.addEventListener('load', async function () {
     const response = await fetch(url);
     const jsonData = await response.json();
 
+    //Generate first row of the table
+
     let firstRow = document.createElement('tr');
     firstRow.innerHTML = `
         <td style="font-weight: bold; background-color: #6E7CD8; color: white; text-align: left; padding-left: 2em; border-top-left-radius: 20px;">Country</td>
@@ -75,14 +77,18 @@ window.addEventListener('load', async function () {
     totalDeaths.innerHTML = numberWithCommas(jsonData.Global.TotalDeaths);
     totalRecovered.innerHTML = numberWithCommas(jsonData.Global.TotalRecovered);
 
+    // Select all the countries ans set up event listeners on each of them
+
     const countryRows = table.querySelectorAll('tr');
 
     for (let i = 1; i < Array(...countryRows).length; i++) {
-        const dateArray = [];
-        const casesArray = [];
+
         Array(...countryRows)[i].addEventListener('click', async function () {
+            const dateArray = [];
+            const casesArray = [];
             let slug = Array(...countryRows)[i].getAttribute('data-slug');
             let countryName = Array(...countryRows)[i].getAttribute('data-country');
+            console.log(`https://api.covid19api.com/dayone/country/${slug}`)
             const response = await fetch(`https://api.covid19api.com/dayone/country/${slug}`);
             const jsonData = await response.json();
 
@@ -93,30 +99,35 @@ window.addEventListener('load', async function () {
                 casesArray.push(value['Confirmed']);
             })
 
+            // Filter dateArray to respective months and trim down the size
+
+            const monthArray = dateArray
+                .map(date => {
+                    return new Date(date).getMonth()
+                }).filter((value, i) => {
+                    return i % 25 === 0
+                })
+                .map(value => {
+                    let months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+                    return months[value];
+                });
+
+
+
             // Configure the x and y axis data
 
             const data = {
-                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                labels: monthArray,
                 datasets: [{
-                    label: '# of Votes',
-                    data: [12, 19, 3, 5, 2, 3],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
+                    label: 'Confirmed Cases vs Time',
+                    data: casesArray.filter((value, i) => {
+                        return i % 25 === 0
+                    }),
+                    backgroundColor: ['lightblue'],
+                    borderColor: ['red'],
+                    borderWidth: 1,
+                    pointStyle: 'circle',
+                    pointRadius: 0
                 }]
             }
 
