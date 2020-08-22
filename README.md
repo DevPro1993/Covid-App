@@ -1,6 +1,6 @@
 # Covid Global Stats 
 
-![](.gif)
+![](covid-app.gif)
 
 
 ## Description
