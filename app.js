@@ -77,80 +77,105 @@ window.addEventListener('load', async function () {
     totalDeaths.innerHTML = numberWithCommas(jsonData.Global.TotalDeaths);
     totalRecovered.innerHTML = numberWithCommas(jsonData.Global.TotalRecovered);
 
-    // Select all the countries ans set up event listeners on each of them
-
     const countryRows = table.querySelectorAll('tr');
 
-    for (let i = 1; i < Array(...countryRows).length; i++) {
+    // Define an asynch function to get plot data
 
-        Array(...countryRows)[i].addEventListener('click', async function () {
-            const dateArray = [];
-            const casesArray = [];
-            let slug = Array(...countryRows)[i].getAttribute('data-slug');
-            let countryName = Array(...countryRows)[i].getAttribute('data-country');
-            console.log(`https://api.covid19api.com/dayone/country/${slug}`)
-            const response = await fetch(`https://api.covid19api.com/dayone/country/${slug}`);
-            const jsonData = await response.json();
+    const getGraph = async function (i) {
+        const dateArray = [];
+        const casesArray = [];
+        let slug = Array(...countryRows)[i].getAttribute('data-slug');
+        let countryName = Array(...countryRows)[i].getAttribute('data-country');
+        console.log(`https://api.covid19api.com/dayone/country/${slug}`)
+        const response = await fetch(`https://api.covid19api.com/dayone/country/${slug}`);
+        const jsonData = await response.json();
 
-            // Gather date and covid cases data into an array 
+        // Gather date and covid cases data into an array 
 
-            jsonData.forEach(value => {
-                dateArray.push(value['Date']);
-                casesArray.push(value['Confirmed']);
+        jsonData.forEach(value => {
+            dateArray.push(value['Date']);
+            casesArray.push(value['Confirmed']);
+        })
+
+        // Filter dateArray to respective months and trim down the size
+
+        const monthArray = dateArray
+            .map(date => {
+                return new Date(date).getMonth()
+            }).filter((value, i) => {
+                return i % 30 === 0
             })
-
-            // Filter dateArray to respective months and trim down the size
-
-            const monthArray = dateArray
-                .map(date => {
-                    return new Date(date).getMonth()
-                }).filter((value, i) => {
-                    return i % 25 === 0
-                })
-                .map(value => {
-                    let months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-                    return months[value];
-                });
-
-
-
-            // Configure the x and y axis data
-
-            const data = {
-                labels: monthArray,
-                datasets: [{
-                    label: 'Confirmed Cases vs Time',
-                    data: casesArray.filter((value, i) => {
-                        return i % 25 === 0
-                    }),
-                    backgroundColor: ['lightblue'],
-                    borderColor: ['red'],
-                    borderWidth: 1,
-                    pointStyle: 'circle',
-                    pointRadius: 0
-                }]
-            }
-
-            // Configure options
-
-            const options = {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
-
-            // Plot data using Chart.js
-
-            const graph = new Chart(covidPlot, {
-                type: 'line',
-                data: data,
-                options: options
+            .map(value => {
+                let months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+                return months[value];
             });
 
+
+
+        // Configure the x and y axis data
+
+        const data = {
+            labels: monthArray,
+            datasets: [{
+                label: 'Covid Cases over Time',
+                data: casesArray.filter((value, i) => {
+                    return i % 30 === 0
+                }),
+                backgroundColor: ['lightblue'],
+                borderWidth: 1,
+                pointStyle: 'circle',
+                pointRadius: 0,
+                pointHoverBackgroundColor: 'red'
+            }]
+        }
+
+        // Configure options
+
+        const options = {
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Confirmed Cases'
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Month'
+                    }
+                }]
+            },
+            title: {
+                text: countryName,
+                display: true
+            }
+        }
+
+        // Plot data using Chart.js
+
+        const graph = new Chart(covidPlot, {
+            type: 'line',
+            data: data,
+            options: options
+        });
+
+    }
+
+    // Plot data for first country upon loading
+
+    getGraph(1);
+
+
+    // Select all the countries ans set up event listeners on each of them
+
+    for (let i = 1; i < Array(...countryRows).length; i++) {
+        Array(...countryRows)[i].addEventListener('click', () => {
+            getGraph(i);
         })
     }
 
